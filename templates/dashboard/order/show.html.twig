@@ -1,0 +1,104 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}{{ order.id }}{% endblock %}
+
+{% block body %}
+    <div class="ui segment">
+        <h2 class="ui left floated header">PayPal orders</h2>
+        <div class="ui right floated header">
+            <button class="ui green button">Finalize order</button>
+        </div>
+        <div class="ui clearing divider">
+        </div>
+
+        <h3>Order details</h3>
+        <table class="ui table">
+            <tr>
+                <td>PayPal ID</td>
+                <td class="collapsing">{{ order.id }}</td>
+            </tr>
+        </table>
+
+        <h3>Customer details</h3>
+        <table class="ui table">
+            <tr>
+                <td>Given name</td>
+                <td>{{ order['payer']['name']['given_name'] }}</td>
+            </tr>
+            <tr>
+                <td>Surname</td>
+                <td>{{ order['payer']['name']['surname'] }}</td>
+            </tr>
+            <tr>
+                <td>E-mail address</td>
+                <td class="collapsing">{{ order['payer']['email_address'] }}</td>
+            </tr>
+        </table>
+
+        <h3>Shipping Label</h3>
+        <div class="ui segment">
+            <p>
+                {{ order['purchase_units'][0]['shipping']['name']['full_name'] }}
+                <br>
+                {{ order['purchase_units'][0]['shipping']['address']['address_line_1'] }}
+                <br>
+                {{ order['purchase_units'][0]['shipping']['address']['postal_code'] }}&nbsp;&nbsp;{{ order['purchase_units'][0]['shipping']['address']['admin_area_2'] | upper }}
+                <br>
+                {{ country_name }}
+            </p>
+        </div>
+
+        <h3>Ordered products</h3>
+        <table class="ui celled table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th class="right aligned collapsing">Quantity</th>
+                <th class="right aligned collapsing">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>
+                        {{ product['name'] }}
+                    </td>
+                    <td>
+                       {{ product['quantity'] }}
+                    </td>
+                    <td class="right aligned">
+                        {{ (product['subtotal']) | format_currency('EUR') }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <table class="ui table">
+            <tr>
+                <td>Subtotal</td>
+                <td class="right aligned">
+                        {{ (order['purchase_units'][0]['amount']['breakdown']['item_total']['value'])|format_currency('EUR') }}
+                </td>
+            </tr>
+            <tr>
+                <td>Shipping</td>
+                <td class="right aligned">
+                        {{ ( order['purchase_units'][0]['amount']['breakdown']['shipping']['value'])|format_currency('EUR') }}
+                </td>
+            </tr>
+        </table>
+
+        <div class="ui divider"></div>
+        <table class="ui table">
+            <tr>
+                <td>
+                    Total
+                </td>
+                <td class="right aligned">
+                    {{ ( order['purchase_units'][0]['amount']['value'])|format_currency('EUR') }}
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
