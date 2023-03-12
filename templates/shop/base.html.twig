@@ -15,8 +15,11 @@
 <body>
 <h1>Shop</h1>
 <p>
-    Cart: 0 |
-    <a href="">Checkout</a>
+    {% set amountInCart %}
+        {{ render(controller('App\\Controller\\CartController::count')) }}
+    {% endset %}
+    Cart: {{ amountInCart }} |
+    <a href="{{ path('app_shop_cart') }}">Checkout</a>
 </p>
 <div class="ui divider"></div>
 <div class="force-inline">

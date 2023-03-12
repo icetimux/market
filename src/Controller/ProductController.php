@@ -39,6 +39,7 @@ class ProductController extends AbstractController
         $product->setDescription($request->get('description'));
         $product->setStock((int)$request->get('stock') ?? null);
         $product->setImages($request->get('images'));
+        $product->setMaxAllowedPerOrder($request->get('max_allowed_per_order'));
 
         // check errors
         $errors = $validator->validate($product);
@@ -75,6 +76,7 @@ class ProductController extends AbstractController
         $product->setStock($request->get('stock'));
         $product->setImages($request->get('images'));
         $product->setName($request->get('name'));
+        $product->setMaxAllowedPerOrder($request->get('max_allowed_per_order'));
 
         // check errors
         $errors = $validator->validate($product);

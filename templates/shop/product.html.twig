@@ -21,8 +21,33 @@
         {{ product.description }}
     </p>
 
-    <div class="ui input">
-        <input type="number" placeholder="Qty">
-    </div>
-    <a href="" class="ui primary button">Add to cart</a>
+    <form action="{{ path('app_cart_add') }}" method="POST">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <label for="" class="label">Quantity</label>
+        <select
+                {% if product.stock < 1 or max_allowed < 1 %}
+                    disabled="disabled"
+                {% endif %}
+                name="amount"
+                class="ui input"
+        >
+            {% for i in 1..max_allowed %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <button
+                class=" {{ product.stock < 1 ? 'red' : 'primary' }}"
+
+                {% if product.stock < 1 or max_allowed < 1 %}
+                    disabled="disabled"
+                {% endif %}
+        >
+            {% if product.stock < 1 %}
+                SOLD OUT
+            {% else %}
+                Add to cart
+            {% endif %}
+        </button>
+    </form>
 {% endblock %}

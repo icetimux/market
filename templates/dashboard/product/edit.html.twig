@@ -26,6 +26,10 @@
                 <input type="number" name="stock" placeholder="Stock" value="{{ product.stock }}">
             </div>
             <div class="field">
+                <label>Max allowed per order</label>
+                <input type="number" name="max_allowed_per_order" placeholder="Max allowed per order" value="{{ product.maxAllowedPerOrder }}">
+            </div>
+            <div class="field">
                 <label>Description</label>
                 <textarea name="description" cols="30" rows="10">{{ product.description  }}</textarea>
             </div>

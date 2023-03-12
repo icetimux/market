@@ -1,0 +1,114 @@
+{% extends 'shop/base.html.twig' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block body %}
+    <h2>Your shopping cart</h2>
+
+    {% if products %}
+        <table class="table is-fullwidth cartpage">
+            {% for product in products %}
+                <tr>
+                    <td style="width: 200px;">
+                        <a class="cartlink" href="{{ path('app_shop_product', {label: product.label}) }}">
+                            <img style="width: 150px;" src="{{ product.images | slice(0,1)[0]  }}" alt="{{ product.name }}">
+                        </a>
+                    </td>
+                    <td>
+                        <b>
+                            <a class="cartlink" href="{{ path('app_shop_product', {label: product.label}) }}">
+                                {{ product.name }}
+                            </a>
+                            <br>
+                            <form action="{{ path('app_cart_remove') }}" method="POST">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <button class="button is-inverted is-info" type="submit">Remove</button>
+                            </form>
+                        </b>
+                        <br>
+                    </td>
+                    <td style="width: 80px;">
+                        <b>
+                            <form action="{{ path('app_cart_update') }}" method="POST">
+                                <input type="hidden" name="product_id" value="{{ product['id'] }}">
+                                <select
+                                        {% if product['stock'] < 1 %}
+                                            disabled="disabled"
+                                        {% endif %}
+                                        name="amount"
+                                        class="input"
+                                        onchange="this.form.submit()"
+                                >
+                                    {% for i in 1..product['max_allowed'] %}
+                                        <option
+                                                {% if product['quantity'] == i %}
+                                                    selected="selected"
+                                                {% endif %}
+                                                value="{{ i }}"
+                                        >
+                                            {{ i }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </b>
+                    </td>
+                    <td style="width: 200px;" class="has-text-right">
+                        {{ (product.price * product.quantity)|format_currency('EUR') }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="ui divider"></div>
+        <div class="subtotal is-pulled-right has-text-right">
+            <h3>
+              Subtotal:  {{ (subtotal)|format_currency('EUR') }}
+            </h3>
+            <p>
+                Shipping calculated at checkout.
+            </p>
+            <br>
+            <div class="is-pulled-right">
+                <div id="paypal-button-container"></div>
+            </div>
+        </div>
+
+    {% else %}
+        <p>
+            You have nothing in your shopping cart.
+        </p>
+        <p>
+            <a href="/" class="button is-info">Continue shopping</a>
+        </p>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    paypal.Buttons({
+    // Sets up the transaction when a payment button is clicked
+    createOrder: (data, actions) => {
+    const createOrderUrl =  'api/create-paypal-order';
+    return fetch(createOrderUrl).then(function(response) {
+    return response.json();
+}).then(function(order){
+    return actions.order.create(order);
+});
+},
+    // Finalize the transaction after payer approval
+    onApprove: (data, actions) => {
+    return actions.order.capture().then(function(orderData) {
+    if (orderData.status === 'COMPLETED'){
+    fetch('api/confirm-paypal-order', {
+    method: "POST",
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(orderData)
+}).then(res => {
+    window.location.href = '/success';
+});
+}
+});
+}
+}).render('#paypal-button-container');
+</script>
+{% endblock %}

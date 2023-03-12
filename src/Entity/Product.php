@@ -39,6 +39,10 @@ class Product
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $images = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Assert\Positive]
+    private ?int $max_allowed_per_order = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,5 +123,17 @@ class Product
     public function getImagesArray(): array
     {
         return \explode("\n", $this->images);
+    }
+
+    public function getMaxAllowedPerOrder(): ?int
+    {
+        return $this->max_allowed_per_order;
+    }
+
+    public function setMaxAllowedPerOrder(int $max_allowed_per_order): self
+    {
+        $this->max_allowed_per_order = $max_allowed_per_order;
+
+        return $this;
     }
 }
