@@ -6,8 +6,24 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
+import 'jquery';
 import '../public/semantic-ui/dist/semantic.min.css'
+import '../public/semantic-ui/dist/semantic.min.js'
 import './styles/app.css'
+
+$(document).ready(function() {
+    $('.ui.dropdown').dropdown();
+    $('.sidebar-menu-toggler').on('click', function() {
+        var target = $(this).data('target');
+        $(target)
+            .sidebar({
+                dinPage: true,
+                transition: 'overlay',
+                mobileTransition: 'overlay'
+            })
+            .sidebar('toggle');
+    });
+});
 
 // start the Stimulus application
 import './bootstrap';

@@ -1,0 +1,19 @@
+{% extends 'shop/base.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+    <h2>Products</h2>
+    {% for product in products %}
+        {% for image in product.imagesArray | slice(0,1) %}
+            {% if image == null %}
+                <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/image.png') }}" width="64">
+            {% endif %}
+            <img src="{{ image }}">
+            <br>
+        {% endfor %}
+        <a href="{{ path('app_shop_product', {label: product.label}) }}">{{ product.name }}</a>
+        <p>{{ product.price | format_currency('EUR') }}</p>
+        <div class="ui divider"></div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Create Product{% endblock %}
+
+{% block body %}
+    <div class="ui segment">
+        <h2 class="ui left floated header">Create Product</h2>
+        <div class="ui clearing divider">
+        </div>
+        <form action="{{ path('app_product_store') }}" method="POST" class="ui form">
+            <div class="field">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="Name">
+            </div>
+            <div class="field">
+                <label>Label</label>
+                <input type="text" name="label" placeholder="Label">
+            </div>
+            <div class="field">
+                <label>Price</label>
+                <input type="text" name="price" placeholder="Price">
+            </div>
+            <div class="field">
+                <label>Stock</label>
+                <input type="number" name="stock" placeholder="Stock">
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <textarea name="description" cols="30" rows="10"></textarea>
+            </div>
+            <div class="field">
+                <label>Images</label>
+                <textarea name="images" cols="30" rows="4"></textarea>
+            </div>
+            <button class="ui green button" type="submit">Save Product</button>
+        </form>
+    </div>
+
+{% endblock %}

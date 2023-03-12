@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Administration Panel{% endblock %}</title>
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+    <!-- sidebar -->
+    <div class="ui sidebar inverted vertical menu sidebar-menu" id="sidebar">
+        <div class="item">
+            <div class="menu">
+                <a class="item" href="{{ path('app_product_index') }}">
+                    <div>Products</div>
+                </a>
+                <a class="item">
+                    <div>Orders</div>
+                </a>
+                <a class="item">
+                    <div>Emails</div>
+                </a>
+            </div>
+        </div>
+
+        {#    SearchBar#}
+        {#    <div class="item">#}
+        {#        <form action="#">#}
+        {#            <div class="ui mini action input">#}
+        {#                <input type="text" placeholder="Search..." />#}
+        {#                <button class="ui mini icon button">#}
+        {#                    <i class=" search icon"></i>#}
+        {#                </button>#}
+        {#            </div>#}
+        {#        </form>#}
+        {#    </div>#}
+    </div>
+
+    <!-- end sidebar -->
+    <!-- top nav -->
+
+    <nav class="ui top fixed inverted menu">
+        <div class="left menu">
+            <a href="#" class="sidebar-menu-toggler item" data-target="#sidebar">
+                <i class="sidebar icon"></i>
+            </a>
+            <a href="{{ path('app_dashboard') }}" class="header item">
+                Administration Panel
+            </a>
+        </div>
+
+        <div class="right menu">
+            {#        <a href="#" class="item">#}
+            {#            <i class="bell icon"></i>#}
+            {#        </a>#}
+            <div class="ui dropdown item">
+                <i class="user cirlce icon"></i>
+                <div class="menu">
+                    <a href="#" class="item">
+                        <i class="sign-out icon"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- end top nav -->
+    <div class="pusher">
+        <div class="main-content">
+            {% for message in app.flashes('success') %}
+                <div class="ui success message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="ui error message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

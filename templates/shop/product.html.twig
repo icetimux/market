@@ -1,0 +1,28 @@
+{% extends 'shop/base.html.twig' %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block body %}
+    <h2>{{ product.name }}</h2>
+
+    {% for image in product.imagesArray %}
+        {% if image == null %}
+            <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/image.png') }}" width="256">
+        {% endif %}
+        <img src="{{ image }}">
+        <br>
+    {% endfor %}
+
+    <h3>{{ product.price | format_currency('EUR') }}</h3>
+
+    <p>
+        {{ product.description }}
+    </p>
+
+    <div class="ui input">
+        <input type="number" placeholder="Qty">
+    </div>
+    <a href="" class="ui primary button">Add to cart</a>
+{% endblock %}
