@@ -76,4 +76,11 @@ class ShopController extends AbstractController
             'subtotal' => $subtotal
         ]);
     }
+
+    #[Route('/success', name: 'order_success')]
+    public function success(Request $request): Response
+    {
+        $request->getSession()->clear();
+        return $this->render('shop/success.html.twig');
+    }
 }

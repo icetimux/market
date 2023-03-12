@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        .totals td{
+            border-color: transparent !important;
+        }
+
+        .lastrow.top tr:last-child {
+            border-top: 1px solid #dbdbdb !important;
+        }
+
+        .lastrow.bottom tr:last-child {
+            border-bottom: 1px solid #dbdbdb !important;
+        }
+        body {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <h1 class="title">
+        {{ site_name }}
+    </h1>
+    <div class="content">
+        <div class="title">Thank you for your purchase!</div>
+        <div class="subtitle">ORDER #{{ order['id'] }}</div>
+
+        <p>
+            Hi {{ order['payer']['name']['given_name'] }}, I'm getting your order ready to be shipped. I will notify you when it has been sent.
+        </p>
+        <h2>Order summary</h2>
+        <table class="table is-fullwidth lastrow bottom">
+            {% for product in products %}
+                <tr>
+                    <td style="width: 125px">
+                        <img style="width: 100px;" src="{{ product['images'] | slice(0,1) }}" alt="">
+                    </td>
+                    <td>
+                        <b>
+                            {{ product['name'] }} × {{ product['quantity'] }}
+                        </b>
+                    </td>
+                    <td style="width: 200px" class="has-text-right">
+                        <b>
+                            {{ (product['subtotal'])|format_currency('EUR') }}
+                        </b>
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+        <table class="totals table is-pulled-right lastrow top" style="width: 300px">
+            <tr>
+                <td>Subtotal</td>
+                <td class="has-text-right">
+                    <b>
+                        {{ (order['purchase_units'][0]['amount']['breakdown']['item_total']['value'])|format_currency('EUR') }}
+                    </b>
+                </td>
+            </tr>
+            <tr>
+                <td>Shipping</td>
+                <td class="has-text-right">
+                    <b>
+                        {{ (order['purchase_units'][0]['amount']['breakdown']['shipping']['value'])|format_currency('EUR') }}
+                    </b>
+                </td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td class="has-text-right">
+                    <b>
+                        {{ (order['purchase_units'][0]['amount']['value'])|format_currency('EUR') }}
+                    </b>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <section>
+            <h2>Customer information</h2>
+            <div class="columns is-centered">
+                <div class="column">
+                    <h4>Shipping address</h4>
+                    <p>
+                        {{ order['purchase_units'][0]['shipping']['name']['full_name'] }}
+                        <br>
+                        {{ order['purchase_units'][0]['shipping']['address']['address_line_1'] }}
+                        <br>
+                        {{ order['purchase_units'][0]['shipping']['address']['postal_code'] }}&nbsp;&nbsp;{{ order['purchase_units'][0]['shipping']['address']['admin_area_2'] | upper }}
+                        <br>
+                        {{ country_name }}
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p>
+        If you have any questions, reply to this email or contact me at <a href="mailto:{{ site_email }}">{{ site_email }}</a>
+    </p>
+</div>
+</body>
+</html>

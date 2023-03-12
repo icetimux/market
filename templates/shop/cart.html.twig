@@ -92,7 +92,7 @@
     paypal.Buttons({
     // Sets up the transaction when a payment button is clicked
         createOrder: (data, actions) => {
-            const createOrderUrl =  'api/create-paypal-order';
+            const createOrderUrl = '{{ path('paypal_create_order') }}';
 
             return fetch(createOrderUrl).then(function(response) {
                 return response.json();
@@ -105,12 +105,12 @@
         onApprove: (data, actions) => {
             return actions.order.capture().then(function(orderData) {
                 if (orderData.status === 'COMPLETED'){
-                    fetch('api/confirm-paypal-order', {
+                    fetch('{{ path('paypal_confirm_order') }}', {
                         method: "POST",
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(orderData)
                     }).then(res => {
-                        window.location.href = '/success';
+                        window.location.href = '{{ path('order_success') }}';
                     });
                 }
             });
