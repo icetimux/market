@@ -1,5 +1,9 @@
 {% extends 'shop/base.html.twig' %}
 
+{% block extra_stylesheets %}
+    <script src="https://www.paypal.com/sdk/js?client-id=AaBR1U2Hox2ZIFvMit9nqRgvgQCxUjObxuDZcQ0WyIub99BK8dqQbPWPIujfRepYql5gxia4NEgSSUD1&components=buttons,messages&currency=EUR&debug=true&commit=false&disable-funding=card,paylater,bancontact,blik,eps,giropay,ideal,mercadopago,mybank,p24,sepa,sofort,venmo"></script>
+{% endblock %}
+
 {% block title %}Cart{% endblock %}
 
 {% block body %}
@@ -83,32 +87,34 @@
     {% endif %}
 {% endblock %}
 
-{% block javascript %}
+{% block javascripts %}
 <script>
     paypal.Buttons({
     // Sets up the transaction when a payment button is clicked
-    createOrder: (data, actions) => {
-    const createOrderUrl =  'api/create-paypal-order';
-    return fetch(createOrderUrl).then(function(response) {
-    return response.json();
-}).then(function(order){
-    return actions.order.create(order);
-});
-},
-    // Finalize the transaction after payer approval
-    onApprove: (data, actions) => {
-    return actions.order.capture().then(function(orderData) {
-    if (orderData.status === 'COMPLETED'){
-    fetch('api/confirm-paypal-order', {
-    method: "POST",
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(orderData)
-}).then(res => {
-    window.location.href = '/success';
-});
-}
-});
-}
-}).render('#paypal-button-container');
+        createOrder: (data, actions) => {
+            const createOrderUrl =  'api/create-paypal-order';
+
+            return fetch(createOrderUrl).then(function(response) {
+                return response.json();
+            }).then(function(order){
+                return actions.order.create(order);
+            });
+        },
+
+        // Finalize the transaction after payer approval
+        onApprove: (data, actions) => {
+            return actions.order.capture().then(function(orderData) {
+                if (orderData.status === 'COMPLETED'){
+                    fetch('api/confirm-paypal-order', {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(orderData)
+                    }).then(res => {
+                        window.location.href = '/success';
+                    });
+                }
+            });
+        }
+    }).render('#paypal-button-container');
 </script>
 {% endblock %}
