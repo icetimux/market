@@ -19,7 +19,7 @@ class PayPalOrder
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $paypal_id = null;
 
     #[ORM\Column(length: 255, nullable: true)]

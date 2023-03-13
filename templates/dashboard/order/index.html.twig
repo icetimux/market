@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{ order.paypalId }}</td>
                     <td class="collapsing">
-                        {% if order.finalized %}
+                        {% if order.finalized == true %}
                             <i class="green check icon"></i>
                             <span>Yes</span>
                         {% else %}
