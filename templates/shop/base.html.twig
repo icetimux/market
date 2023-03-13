@@ -20,7 +20,7 @@
 <h1>Shop</h1>
 <p>
     {% set amountInCart %}
-        {{ render(controller('App\\Controller\\CartController::count')) }}
+        {{ render(controller('App\\Controller\\Shop\\CartController::count')) }}
     {% endset %}
     Cart: {{ amountInCart }} |
     <a href="{{ path('app_shop_cart') }}">Checkout</a>

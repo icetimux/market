@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Dashboard;
 
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;

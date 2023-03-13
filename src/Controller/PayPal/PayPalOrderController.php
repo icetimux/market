@@ -10,17 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Intl\Countries;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PayPalController extends AbstractController
+class PayPalOrderController extends AbstractController
 {
-    public function __construct(private PayPalOrderHelper $orderHelper, private MailerInterface $mailer, private EntityManagerInterface $entityManager)
-    {
-    }
-
     #[Route('paypal/create-order', name: 'paypal_create_order')]
     public function create(Request $request, Cart $cartService): Response
     {
@@ -70,12 +63,11 @@ class PayPalController extends AbstractController
             ],
         ];
 
-
         return new JsonResponse($result, 200);
     }
 
     #[Route('paypal/confirm-order', name: 'paypal_confirm_order', methods: ['POST'])]
-    public function confirm(Request $request): Response
+    public function confirm(Request $request, PayPalOrderHelper $helper, EntityManagerInterface $entityManager): Response
     {
         $orderData = json_decode($request->getContent(), true);
 
@@ -85,40 +77,11 @@ class PayPalController extends AbstractController
         $order->setFinalized(false);
         $order->setCreatedAt(new \DateTimeImmutable());
 
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
+        $entityManager->persist($order);
+        $entityManager->flush();
 
-        $this->sendOrderConfirmationEmail($orderData);
+        $helper->sendOrderConfirmationEmail($orderData);
 
         return new JsonResponse(null, 200);
-    }
-
-    private function sendOrderConfirmationEmail(array $order)
-    {
-        $customerEmail = $order['payer']['email_address'];
-
-        $email = (new Email())
-            ->from($this->getParameter('site_email'))
-            ->subject('Order #'.$order['id']. ' confirmed')
-            ->to($customerEmail)
-            ->bcc($this->getParameter('site_email'))
-            ->html($this->getEmailHtml($order));
-
-        $this->mailer->send($email);
-    }
-
-    private function getEmailHtml(array $order): string
-    {
-        $products = $this->orderHelper->getProducts($order);
-
-        $countryName = Countries::getName($order['payer']['address']['country_code']);
-
-        return $this->renderView('emails/order_confirmation.html.twig', [
-            'site_email' => $this->getParameter('site_email'),
-            'site_name' => $this->getParameter('site_name'),
-            'order' => $order,
-            'products' => $products,
-            'country_name' => $countryName
-        ]);
     }
 }
