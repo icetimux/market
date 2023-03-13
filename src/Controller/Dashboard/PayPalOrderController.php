@@ -3,7 +3,7 @@
 namespace App\Controller\Dashboard;
 
 use App\Entity\PayPalOrder;
-use App\PayPalOrderHelper;
+use App\Service\PayPalOrderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

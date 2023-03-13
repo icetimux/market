@@ -2,9 +2,9 @@
 
 namespace App\Controller\Shop;
 
-use App\Cart;
 use App\Entity\Product;
 use App\EntitySerializer;
+use App\Service\Cart;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

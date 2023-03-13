@@ -25,5 +25,9 @@ $(document).ready(function() {
     });
 });
 
+$('#finalize').click(function(){
+    $('#finalize').addClass('loading');
+});
+
 // start the Stimulus application
 import './bootstrap';

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Service;
 
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;

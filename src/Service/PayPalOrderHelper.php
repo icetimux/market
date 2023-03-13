@@ -1,9 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Service;
 
 use App\Entity\PayPalOrder;
 use App\Entity\Product;
+use App\EntitySerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Intl\Countries;
@@ -13,7 +14,13 @@ use Twig\Environment;
 
 class PayPalOrderHelper
 {
-    public function __construct(private EntityManagerInterface $entityManager, private EntitySerializer $serializer, private MailerInterface $mailer, private ParameterBagInterface $params, private Environment $twig)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private EntitySerializer $serializer,
+        private MailerInterface $mailer,
+        private ParameterBagInterface $params,
+        private Environment $twig
+    )
     {
     }
 

@@ -23,8 +23,16 @@
             {% for order in orders %}
                 <tr>
                     <td>{{ order.paypalId }}</td>
-                    <td class="collapsing">{{ order.finalized ? 'Yes' : 'No' }}</td>
-                    <td class="collapsing">{{ order.createdAt | format_date('medium') }}</td>
+                    <td class="collapsing">
+                        {% if order.finalized %}
+                            <i class="green check icon"></i>
+                            <span>Yes</span>
+                        {% else %}
+                            <i class="red close icon"></i>
+                            <span>No</span>
+                        {% endif %}
+                    </td>
+                    <td class="collapsing">{{ order.createdAt | format_datetime('long') }}</td>
                     <td class="force-inline collapsing">
                         <a href="{{ path('app_paypal_order_show', {paypal_id: order.paypalId}) }}" class="ui button mini primary">View</a>
                     </td>

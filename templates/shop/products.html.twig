@@ -7,9 +7,9 @@
     {% for product in products %}
         {% for image in product.imagesArray | slice(0,1) %}
             {% if image == null %}
-                <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/image.png') }}" width="64">
+                <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/square-image.png') }}" width="64">
             {% endif %}
-            <img src="{{ image }}">
+            <img src="{{ asset(image) }}" width="64">
             <br>
         {% endfor %}
         <a href="{{ path('app_shop_product', {label: product.label}) }}">{{ product.name }}</a>

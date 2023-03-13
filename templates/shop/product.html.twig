@@ -9,10 +9,9 @@
 
     {% for image in product.imagesArray %}
         {% if image == null %}
-            <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/image.png') }}" width="256">
+            <img src="{{ asset('semantic-ui/examples/assets/images/wireframe/square-image.png') }}" width="256">
         {% endif %}
-        <img src="{{ image }}">
-        <br>
+        <img src="{{ asset(image) }}" width="256">
     {% endfor %}
 
     <h3>{{ product.price | format_currency('EUR') }}</h3>
