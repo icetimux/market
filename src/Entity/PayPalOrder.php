@@ -22,6 +22,12 @@ class PayPalOrder
     #[ORM\Column(length: 255)]
     private ?string $paypal_id = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tracking_number = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $finalized = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +65,30 @@ class PayPalOrder
     public function setPaypalId(string $paypal_id): self
     {
         $this->paypal_id = $paypal_id;
+
+        return $this;
+    }
+
+    public function getTrackingNumber(): ?string
+    {
+        return $this->tracking_number;
+    }
+
+    public function setTrackingNumber(?string $tracking_number): self
+    {
+        $this->tracking_number = $tracking_number;
+
+        return $this;
+    }
+
+    public function isFinalized(): ?bool
+    {
+        return $this->finalized;
+    }
+
+    public function setFinalized(?bool $finalized): self
+    {
+        $this->finalized = $finalized;
 
         return $this;
     }

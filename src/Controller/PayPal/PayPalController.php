@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\PayPal;
 
 use App\Cart;
 use App\Entity\PayPalOrder;
 use App\PayPalOrderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Intl\Countries;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 
 class PayPalController extends AbstractController
 {
@@ -82,6 +82,7 @@ class PayPalController extends AbstractController
         $order = new PayPalOrder();
         $order->setPaypalId($orderData['id']);
         $order->setData($orderData);
+        $order->setFinalized(false);
         $order->setCreatedAt(new \DateTimeImmutable());
 
         $this->entityManager->persist($order);

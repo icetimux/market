@@ -6,6 +6,7 @@ use App\Entity\PayPalOrder;
 use App\PayPalOrderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Intl\Countries;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,9 +31,49 @@ class PayPalOrderController extends AbstractController
         $countryName = Countries::getName($order->getData()['payer']['address']['country_code']);
 
         return $this->render('dashboard/order/show.html.twig', [
-            'order' => $order->getData(),
+            'order' => $order,
+            'orderData' => $order->getData(),
             'products' => $products,
             'country_name' => $countryName
         ]);
+    }
+
+    #[Route('/admin/order/{paypal_id}', name: 'app_paypal_order_update', methods: ['PUT'])]
+    public function update(Request $request, PayPalOrder $order,  EntityManagerInterface $entityManager): Response
+    {
+        $order->setTrackingNumber($request->get('tracking_number'));
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Tracking number updated');
+
+        return $this->redirectToRoute('app_paypal_order_show', ['paypal_id' => $order->getPaypalId()]);
+    }
+
+    #[Route('/admin/order/finalize', name: 'app_paypal_order_finalize', methods: ['POST'])]
+    public function finalize(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $payPalId = $request->get('paypal_id');
+        $order = $entityManager->getRepository(PayPalOrder::class)->findOneBy(['paypal_id' => $payPalId]);
+
+        $redirectRoute = $this->redirectToRoute('app_paypal_order_show', ['paypal_id' => $order->getPaypalId()]);
+
+        if (!$order->getTrackingNumber()) {
+            $this->addFlash('error', 'Can not finalize order without tracking number');
+            return $redirectRoute;
+        }
+
+        if ($order->isFinalized()) {
+            $this->addFlash('error', 'Order already finalized');
+            return $redirectRoute;
+        }
+
+        $order->setFinalized(true);
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Order finalized');
+
+        return $redirectRoute;
     }
 }
