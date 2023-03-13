@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        .totals td{
+            border-color: transparent !important;
+        }
+
+        .lastrow.top tr:last-child {
+            border-top: 1px solid #dbdbdb !important;
+        }
+
+        .lastrow.bottom tr:last-child {
+            border-bottom: 1px solid #dbdbdb !important;
+        }
+        body {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <h1 class="title">
+        {{ site_name }}
+    </h1>
+    <div class="content">
+        <p>Your order has been shipped.</p>
+        <p>Order number: #{{ order['id'] }}</p>
+        <p>Track your order using the following tracking number: {{ tracking_number }}</p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p>
+        If you have any questions, reply to this email or contact me at <a href="mailto:{{ site_email }}">{{ site_email }}</a>
+    </p>
+</div>
+</body>
+</html>

@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Intl\Countries;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PayPalOrderController extends AbstractController
@@ -51,7 +53,7 @@ class PayPalOrderController extends AbstractController
     }
 
     #[Route('/admin/order/finalize', name: 'app_paypal_order_finalize', methods: ['POST'])]
-    public function finalize(Request $request, EntityManagerInterface $entityManager): Response
+    public function finalize(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $payPalId = $request->get('paypal_id');
         $order = $entityManager->getRepository(PayPalOrder::class)->findOneBy(['paypal_id' => $payPalId]);
@@ -74,6 +76,29 @@ class PayPalOrderController extends AbstractController
 
         $this->addFlash('success', 'Order finalized');
 
+        // send email
+        $orderData = $order->getData();
+        $customerEmail = $orderData['payer']['email_address'];
+
+        $email = (new Email())
+            ->from($this->getParameter('site_email'))
+            ->subject('Order #'.$orderData['id']. ' confirmed')
+            ->to($customerEmail)
+            ->bcc($this->getParameter('site_email'))
+            ->html($this->getEmailHtml($order));
+
+        $mailer->send($email);
+
         return $redirectRoute;
+    }
+
+    private function getEmailHtml(PayPalOrder $order): string
+    {
+        return $this->renderView('emails/shipment_confirmation.html.twig', [
+            'site_email' => $this->getParameter('site_email'),
+            'site_name' => $this->getParameter('site_name'),
+            'order' => $order->getData(),
+            'tracking_number' => $order->getTrackingNumber(),
+        ]);
     }
 }
